@@ -1,21 +1,50 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { EventsProvider } from './src/contexts/EventsContext';
+import Home from './src/screens/Home';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import EventForm from './src/screens/eventForm';
+import { Button, Icon } from '@rneui/themed';
+
+const Stack = createNativeStackNavigator();
+
+const screenOptions = {
+  headerTitleStyle: {
+    fontWeight: 'bold',
+  },
+  headerStyle: {
+    backgroundColor: '#a29bfe',
+  },
+};
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <EventsProvider>
+        <Stack.Navigator initialRouteName="Home" screenOptions={screenOptions}>
+          <Stack.Screen
+            name="Home"
+            component={Home}
+            options={({ navigation }) => {
+              return {
+                title: 'Lista de eventos',
+                headerRight: () => (
+                  <Button
+                    onPress={() => navigation.navigate('EventForm')}
+                    type="clear"
+                    icon={<Icon name="add" size={25} color="#04d361" />}
+                  />
+                ),
+              };
+            }}
+          />
+          <Stack.Screen
+            name="EventForm"
+            component={EventForm}
+            options={{ title: 'Formulário de evento' }}
+          />
+        </Stack.Navigator>
+      </EventsProvider>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
